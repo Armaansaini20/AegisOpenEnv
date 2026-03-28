@@ -1,3 +1,12 @@
+---
+title: AegisGym
+emoji: 🏦
+colorFrom: blue
+colorTo: green
+sdk: docker
+pinned: false
+---
+
 # AegisGym: Financial Compliance & AML Sandbox
 
 AegisGym is a reinforcement learning sandbox for training and evaluating autonomous financial auditors. It simulates real-world banking compliance tasks, including Sanction Checks, Anti-Money Laundering (AML) detection, and Regulatory Alignment.
