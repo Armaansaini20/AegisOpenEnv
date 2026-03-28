@@ -1,0 +1,44 @@
+[
+  {
+    "episode": 1,
+    "dataset_question": "When was Rule. 2010  Standards of Commercial Honor and Principles of Trade  Adopted?",
+    "dataset_answer": "2009-05-29 00:00:00",
+    "tier": "easy",
+    "llm_reasoning": "{\"action_type\": \"FLAG\", \"target_id\": \"ACC-BL-001\", \"regulation_citation\": \"EU-AI-Act-Art-57\"}",
+    "action": {
+      "metadata": {},
+      "action_type": "FLAG",
+      "target_id": "ACC-BL-001",
+      "regulation_citation": "EU-AI-Act-Art-57"
+    },
+    "reward": 0.5
+  },
+  {
+    "episode": 2,
+    "dataset_question": "When was Rule Rule 2020. Use of Manipulative, Deceptive or Other Fraudulent Devices adopted",
+    "dataset_answer": "2009-05-29 00:00:00",
+    "tier": "easy",
+    "llm_reasoning": "{\n  \"action_type\": \"FLAG\",\n  \"target_id\": \"ACC-CLEAN-01\",\n  \"regulation_citation\": \"EU-AI-Act-Art-57\"\n}",
+    "action": {
+      "metadata": {},
+      "action_type": "FLAG",
+      "target_id": "ACC-CLEAN-01",
+      "regulation_citation": "EU-AI-Act-Art-57"
+    },
+    "reward": -1.0
+  },
+  {
+    "episode": 3,
+    "dataset_question": "Which countries currently have bilateral FTAs in effect with the U.S.?\n\n",
+    "dataset_answer": "\"The U.S. currently has bilateral FTAs in effect with Australia, Bahrain, Chile, Israel, Jordan, Morocco, Oman, Singapore, Peru, Korea, and Columbia.",
+    "tier": "easy",
+    "llm_reasoning": "{\"action_type\": \"FLAG\", \"target_id\": \"ACC-BL-001\", \"regulation_citation\": \"EU-AI-Act-Art-57: Sandboxes required for high risk.\"}",
+    "action": {
+      "metadata": {},
+      "action_type": "FLAG",
+      "target_id": "ACC-BL-001",
+      "regulation_citation": "EU-AI-Act-Art-57: Sandboxes required for high risk."
+    },
+    "reward": 0.5
+  }
+]

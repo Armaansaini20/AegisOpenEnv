@@ -1,0 +1,4 @@
+openenv-core @ git+https://github.com/meta-pytorch/OpenEnv.git
+pydantic
+uvicorn
+openai
