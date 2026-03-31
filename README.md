@@ -76,10 +76,12 @@ openenv validate http://localhost:7860
 ```
 
 ### Inference Baseline
-Ensure you have set your `OPENAI_API_KEY` and `API_BASE_URL` (supports OpenRouter):
+Ensure you have set your API credentials in your terminal session:
 ```powershell
+$env:OPENAI_API_KEY = "your-api-key-here"
 $env:API_BASE_URL = "https://openrouter.ai/api/v1"
 $env:MODEL_NAME = "stepfun/step-3.5-flash:free"
+$env:ENV_URL = "https://armaan020-aegisopenenv.hf.space"
 python inference.py
 ```
 
