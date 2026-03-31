@@ -91,4 +91,4 @@ This environment is **100% Compliant** with the Meta OpenEnv specification.
 - **Repo Walkthrough**: View `walkthrough.md` for training logs and REINFORCE results.
 
 ---
-*Created for the Meta OpenEnv Prize Pool. Part of the Aegis compliance suite.*
+
