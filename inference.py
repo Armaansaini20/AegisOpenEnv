@@ -1,7 +1,3 @@
-"""
-AegisGym Baseline Inference Script
-Requirement: Must use OpenAI client and env vars for credentials.
-"""
 import os
 import json
 from openai import OpenAI
@@ -9,21 +5,14 @@ from client_env import get_sync_client
 from server.models import AuditAction
 
 # ─── Config (Required by Meta OpenEnv) ──────────────────────────────────────
-API_BASE_URL = os.getenv("API_BASE_URL", "https://api.openai.com/v1")
-MODEL_NAME   = os.getenv("MODEL_NAME", "gpt-4o")
+API_BASE_URL = os.getenv("API_BASE_URL", "https://openrouter.ai/api/v1")
+MODEL_NAME   = os.getenv("MODEL_NAME", "stepfun/step-3.5-flash:free")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-ENV_URL      = os.getenv("ENV_URL", "https://armaan020-aegisgym.hf.space")
-
-# OpenRouter recommends specific headers for their API
-extra_headers = {
-    "HTTP-Referer": "https://huggingface.co/spaces/armaan020/AegisGym",
-    "X-Title": "AegisGym OpenEnv Submission"
-}
+ENV_URL      = os.getenv("ENV_URL", "https://armaan020-aegisopenenv.hf.space")
 
 client = OpenAI(
     api_key=OPENAI_API_KEY, 
-    base_url=API_BASE_URL,
-    default_headers=extra_headers if "openrouter" in API_BASE_URL.lower() else None
+    base_url=API_BASE_URL
 )
 
 SYSTEM_PROMPT = """You are a high-performance financial auditor AI.
@@ -48,6 +37,7 @@ def run_baseline(num_episodes=10):
         try:
             obs_payload = env.reset()
             obs = obs_payload.get("observation", {})
+            target_id = obs.get("account_metadata", {}).get("target_id", "N/A")
             
             user_msg = (
                 f"Audit the transaction.\n"
@@ -56,7 +46,6 @@ def run_baseline(num_episodes=10):
                 f"Account: {obs.get('account_metadata', {})}"
             )
             
-            # OpenAI API Call
             response = client.chat.completions.create(
                 model=MODEL_NAME,
                 messages=[
@@ -68,6 +57,11 @@ def run_baseline(num_episodes=10):
             
             content = response.choices[0].message.content
             action_data = json.loads(content)
+            
+            # Robust Fallbacks
+            if "target_id" not in action_data: action_data["target_id"] = target_id
+            if "action_type" not in action_data: action_data["action_type"] = "APPROVE"
+            
             print(f"  Target: {action_data.get('target_id')} | Action: {action_data.get('action_type')}")
             
             result = env.step(action_data)
@@ -78,7 +72,7 @@ def run_baseline(num_episodes=10):
             episodes_run += 1
             
         except Exception as e:
-            print(f"  Error in episode: {e}")
+            print(f"  Error in episode {i+1}: {e}")
             continue
 
     print(f"\n--- AegisGym Reproducibility Report ---")

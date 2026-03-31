@@ -1,5 +1,5 @@
 import random
-from typing import Dict, Any, Tuple
+from typing import Dict, Any, Tuple, List
 from openenv.core.env_server import Environment
 from .models import AuditAction, AuditObservation, AuditState
 from .grader import Grader
@@ -63,7 +63,7 @@ class AegisOpenEnv(Environment):
 
     def _set_next_scenario(self):
         tiers = ["easy", "medium", "hard"]
-        self.current_tier = tiers[self.step_count % 3]
+        self.current_tier = tiers[self.step_count % len(tiers)]
         
         if self.current_tier == "easy":
             self.current_target_id = random.choice(["ACC-BL-001", "ACC-CLEAN-01"])
