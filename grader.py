@@ -6,6 +6,34 @@ class Grader:
         # Dummy blacklist for Easy task
         self.sanctioned_ids = ["ACC-BL-001", "ACC-BL-002", "ACC-BL-999"]
     
+    def grade(self, tier: str, action: Any, current_target_id: str, current_transactions: List[Dict[str, Any]]) -> float:
+        """Centralized grading entry point for all tiers."""
+        is_flagged = action.action_type in ["FLAG", "BLOCK", "REQUEST_INFO"]
+        p_id, p_cit = 0.0, 0.0
+        f_p, f_n = 0.0, 0.0
+
+        if tier == "easy":
+            p_id = self.grade_easy(action.target_id, is_flagged)
+            is_sanctioned = action.target_id in self.sanctioned_ids
+            if not is_sanctioned and is_flagged: f_p = 1.0
+            elif is_sanctioned and not is_flagged: f_n = 5.0
+                
+        elif tier == "medium":
+            p_id = self.grade_medium(current_transactions, action.target_id, is_flagged)
+            smurf_count = sum(1 for tx in current_transactions if 9000 <= tx.get("amount", 0) < 10000)
+            has_smurfing = smurf_count >= 3
+            if not has_smurfing and is_flagged: f_p = 1.0
+            elif has_smurfing and not is_flagged: f_n = 5.0
+                
+        elif tier == "hard":
+            p_id = 1.0 if is_flagged else 0.0
+            p_cit = self.grade_hard(action.regulation_citation)
+            if not is_flagged: f_n = 5.0
+
+        # Reward = 0.5 * ID + 0.5 * Citation - 1.0 * FP - 1.0 * FN 
+        reward = (0.5 * p_id) + (0.5 * p_cit) - (1.0 * f_p) - (1.0 * f_n)
+        return float(reward)
+
     def grade_easy(self, target_id: str, is_flagged: bool) -> float:
         """
         Sanction Hit: Binary match of AccountID vs Blacklist.

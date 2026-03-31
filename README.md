@@ -1,65 +1,94 @@
 ---
-title: AegisGym
+title: AegisOpenEnv
 emoji: 🏦
-colorFrom: blue
-colorTo: green
+colorFrom: indigo
+colorTo: gray
 sdk: docker
 pinned: false
+license: mit
 ---
 
-# AegisGym: Financial Compliance & AML Sandbox
+# 🏦 AegisOpenEnv: AI-Powered Financial Compliance Sandbox
 
-AegisGym is a reinforcement learning sandbox for training and evaluating autonomous financial auditors. It simulates real-world banking compliance tasks, including Sanction Checks, Anti-Money Laundering (AML) detection, and Regulatory Alignment.
+**AegisOpenEnv** is a high-fidelity Reinforcement Learning environment designed for the **Meta OpenEnv** competition. It translates complex banking compliance regulations into a rigorous, text-augmented simulation for training autonomous financial auditors.
 
-## 🏦 Motivation
-Financial institutions process millions of transactions daily. Human auditors often struggle with "smurfing" hidden in noise or complex regulatory clauses across jurisdictions. AegisGym provides a rigorous environment to train LLM-based agents to detect financial crime with high explainability and logical reasoning.
+---
 
-## 🛠️ Environment Specification
+## 🏛️ Why AegisOpenEnv?
+Financial institutions screen millions of transactions daily. Traditional rule-based systems often struggle with **"smurfing"** (structuring transactions just under reporting limits) or adapting to new **Sanctions Lists**. 
 
-### 📝 Action Space
-The agent must provide an `AuditAction`:
+AegisOpenEnv allows LLM-based agents to:
+- **Audit Raw Transactions**: Process complex histories and account metadata.
+- **Reason with Regulations**: Dynamically fetch and cite clauses like the **EU AI Act** or **BSA**.
+- **Learn from Feedback**: Use modular reward signals to optimize for high precision and low false positives.
+
+---
+
+## 🛠️ Task Catalog
+
+Our environment features a 3-tier difficulty system to evaluate various auditor competencies:
+
+| Phase | Task ID | Name | Difficulty | Competency Evaluated |
+| :--- | :--- | :--- | :--- | :--- |
+| **I** | `easy_audit` | Sanction Check | 🟢 Easy | Blacklist matching and deterministic identification. |
+| **II** | `medium_audit` | Smurfing Detection | 🟡 Medium | Pattern recognition across temporal windows. |
+| **III** | `hard_audit` | Regulatory Alignment | 🔴 Hard | Legal reasoning and precise clause citation. |
+
+---
+
+## 👁️ Environment Specification
+
+### 📝 Action Space (`AuditAction`)
+Agents respond with structured JSON containing:
 - `action_type`: `APPROVE`, `FLAG`, or `REQUEST_INFO`.
-- `target_id`: The ID of the account or transaction.
-- `regulation_citation`: A string citing the relevant regulation (e.g., "BSA-31-USC-5318").
+- `target_id`: The identifier of the account or transaction under review.
+- `regulation_citation`: A direct citation of the violated regulation (Required for Hard tier).
 
-### 👁️ Observation Space
-The agent receives an `AuditObservation`:
-- `transactions`: A list of recent transaction dictionaries.
-- `account_metadata`: Details about the account age, tier, and history.
-- `retrieved_regs`: Relevant regulatory guidelines fetched via RAG.
+### 👁️ Observation Space (`AuditObservation`)
+Agents receive:
+- `transactions`: Real-time transaction flux.
+- `account_metadata`: Profile data (age, tier, risk level).
+- `retrieved_regs`: Dynamic context window containing regulatory guidelines.
+- `reward`: The score from the previous action.
 
-### 🎯 Tasks & Difficulty
-| Task ID | Name | Difficulty | Description |
-|---------|------|------------|-------------|
-| `easy_audit` | Sanction Check | Easy | Identify accounts on a blocklist. |
-| `medium_audit` | Smurfing Detection | Medium | Detect structuring patterns under withdrawal limits. |
-| `hard_audit` | Regulatory Alignment | Hard | Accurately cite complex regulations for high-risk tx. |
+### 🎯 Reward Structure
+AegisOpenEnv prioritizes **Zero-Tolerance Compliance**:
+- **Successful Audit**: +0.5 to +1.0 (Identification + Citation).
+- **False Positive**: -1.0 (Inefficiency penalty).
+- **Missed Detection (False Negative)**: **-5.0** (Critical regulatory failure).
 
-## 🚀 Setup & Usage
+---
 
-### Prerequisites
-- Python 3.10+
-- `openenv-core`
-- Hugging Face Space (for deployment)
+## 🚀 Quick Start
 
 ### Installation
 ```bash
 pip install -r requirements.txt
 ```
 
-### Running Locally
+### Local Validation
 ```bash
-uvicorn app:app --host 0.0.0.0 --port 7860
+# Start the server
+uvicorn app:app --port 7860
+
+# Run OpenEnv validate
+openenv validate http://localhost:7860
 ```
 
-### Baseline Inference
-```bash
-export API_BASE_URL="https://api.openai.com/v1"
-export MODEL_NAME="gpt-4o"
-export OPENAI_API_KEY="your_key"
+### Inference Baseline
+Ensure you have set your `OPENAI_API_KEY` and `API_BASE_URL` (supports OpenRouter):
+```powershell
+$env:API_BASE_URL = "https://openrouter.ai/api/v1"
+$env:MODEL_NAME = "stepfun/step-3.5-flash:free"
 python inference.py
 ```
 
-## 🐋 Deployment
-This environment is designed for Hugging Face Spaces. Use the provided `Dockerfile`.
-- **Public URL:** [armaan020/AegisGym](https://huggingface.co/spaces/armaan020/AegisGym)
+---
+
+## 🏁 Compliance Status
+This environment is **100% Compliant** with the Meta OpenEnv specification.
+- **Validation URL**: [armaan020-aegisopenenv.hf.space/health](https://armaan020-aegisopenenv.hf.space/health)
+- **Repo Walkthrough**: View `walkthrough.md` for training logs and REINFORCE results.
+
+---
+*Created for the Meta OpenEnv Prize Pool. Part of the Aegis compliance suite.*

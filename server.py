@@ -4,13 +4,21 @@ from openenv.core.env_server import Environment
 from models import AuditAction, AuditObservation, AuditState
 from grader import Grader
 
-class AegisGymEnv(Environment):
+class AegisOpenEnv(Environment):
+    """
+    AegisOpenEnv is a financial compliance sandbox that translates raw transactions
+    into auditable tasks for LLM-based autonomous agents.
+    
+    It supports multiple tiers: Sanctions (Easy), Smurfing (Medium), and 
+    Regulatory (Hard) citation.
+    """
     def __init__(self):
         super().__init__()
         self.grader = Grader()
-        self.step_count = 0
+        self._history = []
         self.current_tier = "easy"
-        self.max_steps = 100
+        self.step_count = 0
+        self.max_steps = 10
         
         # Test Data
         self.current_target_id = "ACC-BL-001"
@@ -40,30 +48,13 @@ class AegisGymEnv(Environment):
     def step(self, action: AuditAction) -> AuditObservation:
         self.step_count += 1
         
-        is_flagged = action.action_type in ["FLAG", "BLOCK", "REQUEST_INFO"]
+        reward = self.grader.grade(
+            tier=self.current_tier,
+            action=action,
+            current_target_id=self.current_target_id,
+            current_transactions=self.current_transactions
+        )
         
-        p_id, p_cit = 0.0, 0.0
-        f_p, f_n = 0.0, 0.0
-        
-        if self.current_tier == "easy":
-            p_id = self.grader.grade_easy(action.target_id, is_flagged)
-            is_sanctioned = action.target_id in self.grader.sanctioned_ids
-            if not is_sanctioned and is_flagged: f_p = 1.0
-            elif is_sanctioned and not is_flagged: f_n = 5.0
-                
-        elif self.current_tier == "medium":
-            p_id = self.grader.grade_medium(self.current_transactions, action.target_id, is_flagged)
-            smurf_count = sum(1 for tx in self.current_transactions if 9000 <= tx.get("amount", 0) < 10000)
-            has_smurfing = smurf_count >= 3
-            if not has_smurfing and is_flagged: f_p = 1.0
-            elif has_smurfing and not is_flagged: f_n = 5.0
-                
-        elif self.current_tier == "hard":
-            p_id = 1.0 if is_flagged else 0.0
-            p_cit = self.grader.grade_hard(action.regulation_citation)
-            if not is_flagged: f_n = 5.0
-
-        reward = (0.5 * p_id) + (0.5 * p_cit) - (1.0 * f_p) - (1.0 * f_n)
         done = self.step_count >= self.max_steps
         
         obs = self._create_observation(reward, done)

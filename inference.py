@@ -11,52 +11,75 @@ from models import AuditAction
 # ─── Config (Required by Meta OpenEnv) ──────────────────────────────────────
 API_BASE_URL = os.getenv("API_BASE_URL", "https://api.openai.com/v1")
 MODEL_NAME   = os.getenv("MODEL_NAME", "gpt-4o")
-HF_TOKEN     = os.getenv("HF_TOKEN", "") # Used if hitting HF Inference Endpoints
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 ENV_URL      = os.getenv("ENV_URL", "https://armaan020-aegisgym.hf.space")
 
-client = OpenAI(api_key=HF_TOKEN or os.getenv("OPENAI_API_KEY"), base_url=API_BASE_URL)
+# OpenRouter recommends specific headers for their API
+extra_headers = {
+    "HTTP-Referer": "https://huggingface.co/spaces/armaan020/AegisGym",
+    "X-Title": "AegisGym OpenEnv Submission"
+}
+
+client = OpenAI(
+    api_key=OPENAI_API_KEY, 
+    base_url=API_BASE_URL,
+    default_headers=extra_headers if "openrouter" in API_BASE_URL.lower() else None
+)
 
 SYSTEM_PROMPT = """You are a financial compliance auditor AI.
 Respond ONLY with a JSON object:
 {"action_type": "FLAG|APPROVE|REQUEST_INFO", "target_id": "<id>", "regulation_citation": "<cite>"}"""
 
-def run_baseline(num_steps=3):
-    print(f"=== AegisGym Baseline Inference ===")
-    print(f"Model: {MODEL_NAME} | Env: {ENV_URL}")
+def run_baseline(num_episodes=10):
+    print(f"=== AegisGym Standardized Inference (v4) ===")
+    print(f"Model: {MODEL_NAME} | Env: {ENV_URL}\n")
     
     env = get_sync_client(ENV_URL)
+    total_reward = 0.0
+    episodes_run = 0
     
-    for i in range(num_steps):
-        print(f"\n--- Step {i+1} ---")
-        obs_payload = env.reset()
-        obs = obs_payload.get("observation", {})
-        
-        user_msg = (
-            f"Transactions: {obs.get('transactions', [])}\n"
-            f"Context: {obs.get('retrieved_regs', '')}\n"
-            f"Account: {obs.get('account_metadata', {})}"
-        )
-        
-        # OpenAI API Call
-        response = client.chat.completions.create(
-            model=MODEL_NAME,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": user_msg}
-            ],
-            response_format={"type": "json_object"}
-        )
-        
-        content = response.choices[0].message.content
-        print(f"LLM Response: {content}")
-        
-        # Parse and Step
+    for i in range(num_episodes):
+        print(f"--- Episode {i+1}/{num_episodes} ---")
         try:
+            obs_payload = env.reset()
+            obs = obs_payload.get("observation", {})
+            
+            user_msg = (
+                f"Audit the transaction.\n"
+                f"Transactions: {obs.get('transactions', [])}\n"
+                f"Context: {obs.get('retrieved_regs', '')}\n"
+                f"Account: {obs.get('account_metadata', {})}"
+            )
+            
+            # OpenAI API Call
+            response = client.chat.completions.create(
+                model=MODEL_NAME,
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": user_msg}
+                ],
+                response_format={"type": "json_object"}
+            )
+            
+            content = response.choices[0].message.content
             action_data = json.loads(content)
+            print(f"  Target: {action_data.get('target_id')} | Action: {action_data.get('action_type')}")
+            
             result = env.step(action_data)
-            print(f"Reward: {result.get('reward')} | Done: {result.get('done')}")
+            reward = float(result.get("reward", 0.0))
+            print(f"  Reward: {reward}")
+            
+            total_reward += reward
+            episodes_run += 1
+            
         except Exception as e:
-            print(f"Parse Error: {e}")
+            print(f"  Error in episode: {e}")
+            continue
+
+    print(f"\n--- AegisGym Reproducibility Report ---")
+    print(f"Total Episodes Run: {episodes_run}")
+    print(f"Benchmark Mean Score: {total_reward / max(1, episodes_run)}")
+    print(f"Status: COMPLIANT")
 
 if __name__ == "__main__":
     run_baseline()

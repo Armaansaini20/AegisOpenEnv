@@ -1,23 +1,22 @@
-from openenv.core.env_server import Action, Observation, State
+from typing import List, Dict, Any, Optional
 from pydantic import Field
-from typing import List, Dict, Any
+from openenv.core.env_server import Action, Observation, State
 
 class AuditAction(Action):
-    action_type: str = Field(description="One of: ['APPROVE', 'FLAG', 'REQUEST_INFO']")
-    target_id: str = Field(description="The ID of the account or transaction being evaluated.")
-    regulation_citation: str = Field(description="The specific regulation clause cited.")
+    """Action taken by the auditor agent."""
+    action_type: str = Field(..., description="Action to take: APPROVE, FLAG, or REQUEST_INFO")
+    target_id: str = Field(..., description="Identifier of the account or transaction being audited")
+    regulation_citation: Optional[str] = Field(None, description="Direct citation from the retrieved regulations (Required for Hard tasks)")
 
 class AuditObservation(Observation):
-    transactions: List[Dict[str, Any]] = Field(description="List of transaction dicts")
-    account_metadata: Dict[str, Any] = Field(description="Account metadata")
-    retrieved_regs: str = Field(description="RAG-retrieved sections of guidelines")
-    
-    # Official OpenEnv returns these properties directly on the Observation
-    reward: float = Field(default=0.0, description="Reward gained in the step")
-    done: bool = Field(default=False, description="Whether the episode is complete")
+    """Observation received by the agent after taking an action."""
+    transactions: List[Dict[str, Any]] = Field(..., description="Chronological list of recent transactions for the target entity")
+    account_metadata: Dict[str, Any] = Field(..., description="Metadata about the account (age, risk level, country)")
+    retrieved_regs: str = Field(..., description="Text-based regulatory context window providing relevant compliance clauses")
+    reward: float = Field(..., description="Immediate reward for the last taken action")
+    done: bool = Field(..., description="Episode completion flag")
 
 class AuditState(State):
-    step_count: int = Field(description="Current step of the episode")
-    current_tier: str = Field(description="The compliance tier active for the episode")
-    
-    # Required by base State (depending on library version, might require extra fields, but standard is dict-like or these fields)
+    """Current internal state of the environment server."""
+    step_count: int = Field(..., description="Current step in the audit episode")
+    current_tier: str = Field(..., description="Difficulty tier: easy, medium, or hard")
