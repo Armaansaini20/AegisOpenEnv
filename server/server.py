@@ -1,8 +1,8 @@
 import random
 from typing import Dict, Any, Tuple
 from openenv.core.env_server import Environment
-from models import AuditAction, AuditObservation, AuditState
-from grader import Grader
+from .models import AuditAction, AuditObservation, AuditState
+from .grader import Grader
 
 class AegisOpenEnv(Environment):
     """
