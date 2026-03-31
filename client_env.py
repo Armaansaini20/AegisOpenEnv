@@ -10,7 +10,7 @@ Usage:
 from typing import Any, Dict
 from openenv.core.env_client import EnvClient
 from openenv.core.sync_client import SyncEnvClient
-from models import AuditAction, AuditObservation
+from server.models import AuditAction, AuditObservation
 
 HF_SPACE_WSS = "wss://armaan020-aegisgym.hf.space"
 

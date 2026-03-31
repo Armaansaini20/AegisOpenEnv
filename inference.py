@@ -6,7 +6,7 @@ import os
 import json
 from openai import OpenAI
 from client_env import get_sync_client
-from models import AuditAction
+from server.models import AuditAction
 
 # ─── Config (Required by Meta OpenEnv) ──────────────────────────────────────
 API_BASE_URL = os.getenv("API_BASE_URL", "https://api.openai.com/v1")
