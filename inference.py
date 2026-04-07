@@ -7,7 +7,8 @@ from server.models import AuditAction
 # ─── Config (Required by Meta OpenEnv) ──────────────────────────────────────
 API_BASE_URL = os.getenv("API_BASE_URL", "https://openrouter.ai/api/v1")
 MODEL_NAME   = os.getenv("MODEL_NAME", "stepfun/step-3.5-flash:free")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+HF_TOKEN     = os.getenv("HF_TOKEN")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 ENV_URL      = os.getenv("ENV_URL", "https://armaan020-aegisopenenv.hf.space")
 
 client = OpenAI(
