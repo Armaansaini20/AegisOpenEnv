@@ -37,6 +37,10 @@ def main():
     
     # --- START OF USER PROVIDED SNIPPET ---
     history = []
+    task_name = "official_sample_task"
+    print(f"[START] task={task_name}", flush=True)
+    step_count = 0
+    score = 0.0
     try:
         # Dummy loop to represent the user snippet's context
         for step in range(MAX_STEPS):
@@ -65,19 +69,24 @@ def main():
                 response_text = completion.choices[0].message.content or ""
             except Exception as exc: 
                 failure_msg = f"Model request failed ({exc}). Using fallback action."
-                print(failure_msg)
+                print(failure_msg, flush=True)
                 response_text = FALLBACK_ACTION
 
             action_str = parse_model_action(response_text)
-            print(f"Step {step}: model suggested -> {action_str}")
+            print(f"Step {step}: model suggested -> {action_str}", flush=True)
+
+            step_count += 1
+            reward = 0.5  # dummy reward
+            score += reward
+            print(f"[STEP] step={step_count} reward={reward}", flush=True)
 
             break # Break here for safety in dummy script
 
         else:
-            print(f"Reached max steps ({MAX_STEPS}).")
+            print(f"Reached max steps ({MAX_STEPS}).", flush=True)
 
     finally:
-        pass
+        print(f"[END] task={task_name} score={score} steps={step_count}", flush=True)
     # --- END OF USER PROVIDED SNIPPET ---
 
 if __name__ == "__main__":

@@ -12,8 +12,10 @@ def main():
     episodes = 10
     
     for i in range(episodes):
+        task_name = f"baseline_episode_{i+1}"
         tier = env.state.current_tier
         print(f"\nEpisode {i+1} | Tier: {tier.upper()}")
+        print(f"[START] task={task_name}", flush=True)
         
         # Mocking an agent's decision based on the tier
         if tier == "easy":
@@ -37,8 +39,11 @@ def main():
             
         # step() returns an AuditObservation instance only
         obs = env.step(action)
-        print(f"Action Taken: {action.action_type} for {action.target_id}")
-        print(f"Reward: {obs.reward} | Done: {obs.done}")
+        print(f"Action Taken: {action.action_type} for {action.target_id}", flush=True)
+        print(f"Reward: {obs.reward} | Done: {obs.done}", flush=True)
+        
+        print(f"[STEP] step=1 reward={obs.reward}", flush=True)
+        print(f"[END] task={task_name} score={obs.reward} steps=1", flush=True)
         
         total_score += obs.reward
         if obs.done:

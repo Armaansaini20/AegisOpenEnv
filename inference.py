@@ -33,7 +33,11 @@ def run_baseline(num_episodes=10):
     episodes_run = 0
     
     for i in range(num_episodes):
+        task_name = f"AegisGym_Audit_Episode_{i+1}"
         print(f"--- Episode {i+1}/{num_episodes} ---")
+        print(f"[START] task={task_name}", flush=True)
+        step_count = 0
+        episode_reward = 0.0
         try:
             obs_payload = env.reset()
             obs = obs_payload.get("observation", {})
@@ -62,17 +66,24 @@ def run_baseline(num_episodes=10):
             if "target_id" not in action_data: action_data["target_id"] = target_id
             if "action_type" not in action_data: action_data["action_type"] = "APPROVE"
             
-            print(f"  Target: {action_data.get('target_id')} | Action: {action_data.get('action_type')}")
+            print(f"  Target: {action_data.get('target_id')} | Action: {action_data.get('action_type')}", flush=True)
             
             result = env.step(action_data)
             reward = float(result.get("reward", 0.0))
-            print(f"  Reward: {reward}")
+            episode_reward = reward
+            step_count += 1
+            
+            print(f"  Reward: {reward}", flush=True)
+            print(f"[STEP] step={step_count} reward={reward}", flush=True)
             
             total_reward += reward
             episodes_run += 1
             
+            print(f"[END] task={task_name} score={episode_reward} steps={step_count}", flush=True)
+            
         except Exception as e:
-            print(f"  Error in episode {i+1}: {e}")
+            print(f"  Error in episode {i+1}: {e}", flush=True)
+            print(f"[END] task={task_name} score={episode_reward} steps={step_count}", flush=True)
             continue
 
     print(f"\n--- AegisGym Reproducibility Report ---")
