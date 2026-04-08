@@ -8,11 +8,11 @@ from server.models import AuditAction
 API_BASE_URL = os.getenv("API_BASE_URL", "https://openrouter.ai/api/v1")
 MODEL_NAME   = os.getenv("MODEL_NAME", "stepfun/step-3.5-flash:free")
 HF_TOKEN     = os.getenv("HF_TOKEN")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "EMPTY")
+API_KEY = os.getenv("API_KEY", os.getenv("OPENAI_API_KEY", "EMPTY"))
 ENV_URL      = os.getenv("ENV_URL", "https://armaan020-aegisopenenv.hf.space")
 
 client = OpenAI(
-    api_key=OPENAI_API_KEY, 
+    api_key=API_KEY, 
     base_url=API_BASE_URL
 )
 

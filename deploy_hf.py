@@ -42,7 +42,7 @@ def deploy_to_space(space_name: str):
         print("Uploading files to Hub...")
         
         # Don't upload the cache or local virtual environments
-        ignore_patterns = ["__pycache__/*", "*.git*", ".env", "venv/*"]
+        ignore_patterns = ["__pycache__/*", "*.git*", ".env", "venv/*", ".venv/*", "*.egg-info/*", "uv.lock"]
         
         url = api.upload_folder(
             folder_path=".",

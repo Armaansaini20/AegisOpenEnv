@@ -21,7 +21,7 @@ MAX_STEPS = 10
 
 def main():
     # Configure for OpenRouter
-    api_key = os.getenv("OPENAI_API_KEY", "EMPTY")
+    api_key = os.getenv("API_KEY", os.getenv("OPENAI_API_KEY", "EMPTY"))
     base_url = os.getenv("API_BASE_URL", "https://openrouter.ai/api/v1")
     
     client = OpenAI(
