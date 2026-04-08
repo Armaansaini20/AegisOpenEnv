@@ -31,7 +31,11 @@ class Grader:
             if not is_flagged: f_n = 5.0
 
         # Reward = 0.5 * ID + 0.5 * Citation - 1.0 * FP - 1.0 * FN 
-        reward = (0.5 * p_id) + (0.5 * p_cit) - (1.0 * f_p) - (1.0 * f_n)
+        raw_reward = (0.5 * p_id) + (0.5 * p_cit) - (1.0 * f_p) - (1.0 * f_n)
+        
+        # Proper normalization: squash unbounded raw rewards into strict (0, 1) range using sigmoid
+        import math
+        reward = 1.0 / (1.0 + math.exp(-raw_reward))
         return float(reward)
 
     def grade_easy(self, target_id: str, is_flagged: bool) -> float:

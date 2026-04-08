@@ -40,7 +40,7 @@ def main():
     task_name = "official_sample_task"
     print(f"[START] task={task_name}", flush=True)
     step_count = 0
-    score = 0.0
+    score = 0.5
     try:
         # Dummy loop to represent the user snippet's context
         for step in range(MAX_STEPS):

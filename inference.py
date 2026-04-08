@@ -38,7 +38,7 @@ def run_baseline(num_episodes=10):
         print(f"--- Episode {i+1}/{num_episodes} ---")
         print(f"[START] task={task_name}", flush=True)
         step_count = 0
-        episode_reward = 0.0
+        episode_reward = 0.5
         try:
             obs_payload = env.reset()
             obs = obs_payload.get("observation", {})
@@ -70,7 +70,7 @@ def run_baseline(num_episodes=10):
             print(f"  Target: {action_data.get('target_id')} | Action: {action_data.get('action_type')}", flush=True)
             
             result = env.step(action_data)
-            reward = float(result.get("reward", 0.0))
+            reward = float(result.get("reward", 0.5))
             episode_reward = reward
             step_count += 1
             
