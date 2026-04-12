@@ -3,13 +3,13 @@ requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "openenv-compliance-env"
-version = "0.1.0"
+name = "compliance_env"
+version = "1.0.0"
 description = "Financial compliance environment for OpenEnv with auditor tool access"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [
-    {name = "Armaan"}
+    {name = "Armaan Saini"}
 ]
 dependencies = [
     "openenv-core>=0.2.0",
@@ -29,12 +29,11 @@ dev = [
 ]
 
 [project.scripts]
-server = "compliance_env.server.app:main"
+server = "server.app:main"
 
 [tool.setuptools]
 include-package-data = true
-packages = ["compliance_env", "compliance_env.server"]
-package-dir = { "compliance_env" = ".", "compliance_env.server" = "server" }
+packages = ["server"]
 
 [tool.setuptools.package-data]
 compliance_env = ["**/*.yaml", "**/*.yml", "**/*.md"]

@@ -467,6 +467,42 @@ wheels = [
 ]
 
 [[package]]
+name = "compliance-env"
+version = "1.0.0"
+source = { editable = "." }
+dependencies = [
+    { name = "fastapi" },
+    { name = "httpx" },
+    { name = "openai" },
+    { name = "openenv" },
+    { name = "openenv-core" },
+    { name = "pydantic" },
+    { name = "requests" },
+    { name = "uvicorn", extra = ["standard"] },
+]
+
+[package.optional-dependencies]
+dev = [
+    { name = "pytest" },
+    { name = "pytest-cov" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "fastapi", specifier = ">=0.110.0" },
+    { name = "httpx", specifier = ">=0.25.2" },
+    { name = "openai" },
+    { name = "openenv", specifier = ">=0.1.13" },
+    { name = "openenv-core", specifier = ">=0.2.0" },
+    { name = "pydantic", specifier = ">=2.5.0" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0.0" },
+    { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=4.0.0" },
+    { name = "requests", specifier = ">=2.32.5" },
+    { name = "uvicorn", extras = ["standard"], specifier = ">=0.27.0" },
+]
+provides-extras = ["dev"]
+
+[[package]]
 name = "coverage"
 version = "7.13.5"
 source = { registry = "https://pypi.org/simple" }
@@ -1604,42 +1640,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/35/94/c47e8f7303452793a
 wheels = [
     { url = "https://files.pythonhosted.org/packages/33/7f/e6f4467528161b8f0eb2ec784f4bbcd1fa9ea7acad13c0fb18597013e83b/openenv-0.1.13-py3-none-any.whl", hash = "sha256:813249d7f526f40c6e8b325f705294761a5bc887b9144c3383fa2bae7baa7726", size = 12080, upload-time = "2020-12-16T11:49:38.816Z" },
 ]
-
-[[package]]
-name = "openenv-compliance-env"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "fastapi" },
-    { name = "httpx" },
-    { name = "openai" },
-    { name = "openenv" },
-    { name = "openenv-core" },
-    { name = "pydantic" },
-    { name = "requests" },
-    { name = "uvicorn", extra = ["standard"] },
-]
-
-[package.optional-dependencies]
-dev = [
-    { name = "pytest" },
-    { name = "pytest-cov" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "fastapi", specifier = ">=0.110.0" },
-    { name = "httpx", specifier = ">=0.25.2" },
-    { name = "openai" },
-    { name = "openenv", specifier = ">=0.1.13" },
-    { name = "openenv-core", specifier = ">=0.2.0" },
-    { name = "pydantic", specifier = ">=2.5.0" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0.0" },
-    { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=4.0.0" },
-    { name = "requests", specifier = ">=2.32.5" },
-    { name = "uvicorn", extras = ["standard"], specifier = ">=0.27.0" },
-]
-provides-extras = ["dev"]
 
 [[package]]
 name = "openenv-core"

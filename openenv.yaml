@@ -1,5 +1,6 @@
 spec_version: 1
 name: compliance_env
+version: 1.0.0
 description: Financial compliance sandbox for auditing transactions across easy, medium, and hard tiers.
 type: space
 runtime: fastapi
