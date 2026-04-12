@@ -20,9 +20,9 @@ FALLBACK_ACTION = "stop"
 MAX_STEPS = 10
 
 def main():
-    # Configure for OpenRouter
-    api_key = os.getenv("API_KEY", os.getenv("OPENAI_API_KEY", "EMPTY"))
-    base_url = os.getenv("API_BASE_URL", "https://openrouter.ai/api/v1")
+    # Prefer injected API_KEY and API_BASE_URL
+    api_key = os.getenv("API_KEY") or os.getenv("OPENAI_API_KEY", "EMPTY")
+    base_url = os.getenv("API_BASE_URL") or "https://api.openai.com/v1"
     
     client = OpenAI(
         api_key=api_key, 

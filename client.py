@@ -166,8 +166,8 @@ def run_scenario(config: ScenarioConfig) -> Dict[str, Any]:
     from openai import OpenAI
 
     llm_client = OpenAI(
-        api_key=config.llm_api_key or os.getenv("OPENAI_API_KEY", "EMPTY"),
-        base_url="https://api.openai.com/v1"
+        api_key=config.llm_api_key or os.getenv("API_KEY") or os.getenv("OPENAI_API_KEY", "EMPTY"),
+        base_url=os.getenv("API_BASE_URL", "https://api.openai.com/v1")
         if config.llm_provider == "openai"
         else os.getenv("API_BASE_URL", "https://openrouter.ai/api/v1"),
     )

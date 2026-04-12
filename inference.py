@@ -4,11 +4,16 @@ from openai import OpenAI
 import httpx
 
 # ─── Config (Required by Meta OpenEnv) ──────────────────────────────────────
-API_BASE_URL = os.getenv("API_BASE_URL", "https://openrouter.ai/api/v1")
-MODEL_NAME   = os.getenv("MODEL_NAME", "stepfun/step-3.5-flash:free")
-HF_TOKEN     = os.getenv("HF_TOKEN")
-API_KEY = os.getenv("API_KEY", os.getenv("OPENAI_API_KEY", "EMPTY"))
-ENV_URL      = os.getenv("ENV_URL", "https://armaan020-complianceenv.hf.space")
+# ─── Config (Strictly compliant with Meta OpenEnv Proxy) ────────────────────
+API_BASE_URL = os.getenv("API_BASE_URL")
+API_KEY      = os.getenv("API_KEY")
+MODEL_NAME   = os.getenv("MODEL_NAME", "gpt-4o") # Fallback to standard OpenAI if not provided
+ENV_URL      = os.getenv("ENV_URL", "http://localhost:7860") # Default to local for side-by-side run
+
+if not API_BASE_URL or not API_KEY:
+    print("WARNING: API_BASE_URL or API_KEY not set. Falling back to local/default for testing ONLY.")
+    API_BASE_URL = API_BASE_URL or "https://api.openai.com/v1"
+    API_KEY = API_KEY or "EMPTY"
 
 client = OpenAI(
     api_key=API_KEY, 
