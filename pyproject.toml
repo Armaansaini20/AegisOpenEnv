@@ -3,10 +3,9 @@ requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "AegisOpenEnv"
-version = "4.0.0"
-description = "A high-fidelity financial compliance RL sandbox for autonomous auditors."
-readme = "README.md"
+name = "openenv-compliance-env"
+version = "0.1.0"
+description = "Financial compliance environment for OpenEnv with auditor tool access"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [
@@ -14,22 +13,32 @@ authors = [
 ]
 dependencies = [
     "openenv-core>=0.2.0",
-    "fastapi",
-    "uvicorn",
-    "pydantic",
+    "openenv>=0.1.13",
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.27.0",
+    "pydantic>=2.5.0",
+    "httpx>=0.25.2",
+    "requests>=2.32.5",
     "openai",
-    "datasets",
-    "torch",
-    "transformers",
-    "huggingface_hub"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.0.0",
 ]
 
 [project.scripts]
-server = "server.app:main"
+server = "compliance_env.server.app:main"
 
 [tool.setuptools]
-packages = ["server"]
+include-package-data = true
+packages = ["compliance_env", "compliance_env.server"]
+package-dir = { "compliance_env" = ".", "compliance_env.server" = "server" }
+
+[tool.setuptools.package-data]
+compliance_env = ["**/*.yaml", "**/*.yml", "**/*.md"]
 
 [project.urls]
-Homepage = "https://github.com/Armaansaini20/AegisOpenEnv"
-Repository = "https://github.com/Armaansaini20/AegisOpenEnv"
+Homepage = "https://github.com/Armaansaini20/ComplianceEnv"
+Repository = "https://github.com/Armaansaini20/ComplianceEnv"

@@ -1,30 +1,7 @@
-name: "AegisOpenEnv"
-description: "A high-fidelity financial compliance sandbox for LLM-based autonomous auditors."
-version: "4.0.0"
-
-environment:
-  mode: "simulation"
-  supported_modes: ["simulation"]
-  render_modes: ["ansi", "json"]
-
-tasks:
-  - id: "easy_audit"
-    name: "Sanction Check"
-    description: "Identify and flag accounts on known sanctioned entity lists."
-    goal: "Navigate the transaction history and flag the target entity based on name matching."
-    competency: "Deterministic matching & high-recall detection."
-    
-  - id: "medium_audit"
-    name: "Smurfing Detection"
-    description: "Identify structuring patterns where multiple small transactions are made below thresholds."
-    goal: "Analyze the temporal window of transactions to detect smurfing behavior."
-    competency: "Pattern recognition & temporal reasoning."
-    
-  - id: "hard_audit"
-    name: "Regulatory Alignment"
-    description: "Audit complex transactions and provide precise regulatory citations for flags."
-    goal: "Evaluate the transaction against the EU AI Act or BSA and provide a valid clause citation."
-    competency: "Logical reasoning & legal knowledge retrieval."
-
-standard_version: "1.0.0"
-standard_profile: "openenv-http/1.x"
+spec_version: 1
+name: compliance_env
+description: Financial compliance sandbox for auditing transactions across easy, medium, and hard tiers.
+type: space
+runtime: fastapi
+app: server.app:app
+port: 7860

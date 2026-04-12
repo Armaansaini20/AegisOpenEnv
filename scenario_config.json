@@ -1,0 +1,17 @@
+{
+    "gym_environment_url": "http://localhost:7860",
+    "llm_provider": "openai",
+    "llm_model": "gpt-4o-mini",
+    "llm_api_key": "",
+    "temperature": 0.0,
+    "max_tokens": 4096,
+    "system_prompt": "You are a high-performance financial compliance auditor AI. Your goal is to maximize precision and minimize friction.\n- FLAG: Use for CLEAR sanctions (BL targets) or smurfing evidence.\n- APPROVE: Use for CLEAN accounts. Do NOT waste time.\n- REQUEST_INFO: ONLY use if the risk is ambiguous.\n\nRespond ONLY with a JSON object:\n{\"action_type\": \"FLAG|APPROVE|REQUEST_INFO\", \"target_id\": \"<id>\", \"regulation_citation\": \"<cite>\"}",
+    "user_prompt": "Audit the following transaction and provide your compliance decision. Check the account against known sanctions lists (ACC-BL-*), look for smurfing patterns (multiple transactions near $10,000), and verify regulatory alignment for high-risk entities.",
+    "number_of_runs": 3,
+    "max_iterations": 10,
+    "expected_tools": [
+        "check_sanctions",
+        "detect_smurfing",
+        "verify_regulation"
+    ]
+}

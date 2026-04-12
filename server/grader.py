@@ -66,16 +66,26 @@ class Grader:
 
     def grade_hard(self, citation: str) -> float:
         """
-        Regulatory Mapping: LLM-as-a-judge + Cosine similarity (mocked here).
-        Returns citation accuracy (Pcit) based on simulated semantic match.
+        Regulatory Mapping: Case-insensitive check for mandatory regulations.
         """
         if not citation:
             return 0.0
             
-        # Simplified mock evaluation
-        valid_citations = ["EU-AI-Act-Art-57", "BSA-31-USC-5318"]
-        if any(v in citation for v in valid_citations):
+        cit_upper = citation.upper()
+        # Look for EU-AI-Act (Art 57) or BSA (31 USC 5318)
+        valid_found = False
+        if "EU-AI-ACT" in cit_upper and "57" in cit_upper:
+            valid_found = True
+        if "BSA" in cit_upper and "5318" in cit_upper:
+            valid_found = True
+        if "31-USC-5318" in cit_upper:
+            valid_found = True
+
+        if valid_found:
             return 1.0
-        elif len(citation) > 10:
-            return 0.5 # Partial credit for trying to cite something substantive
+        elif len(citation) > 15:
+            # Partial credit if they cited something that looks like a regulation
+            if any(term in cit_upper for term in ["ART", "SECTION", "USC", "REGULATION", "ACT"]):
+                return 0.6
+            return 0.3
         return 0.0
